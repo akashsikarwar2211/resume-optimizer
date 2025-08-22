@@ -6,9 +6,11 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import {usePuterStore} from "~/lib/puter";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import {useEffect} from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,6 +26,11 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+    const { init } = usePuterStore();
+
+    useEffect(() => {
+        init()
+    }, [init]);
   return (
     <html lang="en">
       <head>
@@ -33,7 +40,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+      <script src="https://js.puter.com/v2/"></script>
+      {children}
         <ScrollRestoration />
         <Scripts />
       </body>
