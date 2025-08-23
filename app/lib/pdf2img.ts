@@ -4,26 +4,25 @@ export interface PdfConversionResult {
     error?: string;
 }
 
-let pdfjsLib: any = null;
-let isLoading = false;
-let loadPromise: Promise<any> | null = null;
+let pdfjsLib: typeof import("pdfjs-dist") | null = null;
+let loadPromise: Promise<typeof import("pdfjs-dist")> | null = null;
 
-async function loadPdfJs(): Promise<any> {
+async function loadPdfJs(): Promise<typeof import("pdfjs-dist")> {
     if (pdfjsLib) return pdfjsLib;
     if (loadPromise) return loadPromise;
 
-    isLoading = true;
-    // @ts-expect-error - pdfjs-dist/build/pdf.mjs is not a module
-    loadPromise = import("pdfjs-dist/build/pdf.mjs").then((lib) => {
-        // Set the worker source to use local file
-        lib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    loadPromise = Promise.all([
+        import("pdfjs-dist/build/pdf.mjs"),
+        import("pdfjs-dist/build/pdf.worker.min.mjs?url") // Get matching worker URL
+    ]).then(([lib, workerSrc]) => {
+        (lib as any).GlobalWorkerOptions.workerSrc = (workerSrc as any).default;
         pdfjsLib = lib;
-        isLoading = false;
         return lib;
     });
 
     return loadPromise;
 }
+
 
 export async function convertPdfToImage(
     file: File
@@ -42,10 +41,17 @@ export async function convertPdfToImage(
         canvas.width = viewport.width;
         canvas.height = viewport.height;
 
-        if (context) {
+        if (!context) {
+            return {
+                imageUrl: "",
+                file: null,
+                error: "Canvas context could not be created",
+            };
+        }
+
             context.imageSmoothingEnabled = true;
             context.imageSmoothingQuality = "high";
-        }
+
 
         await page.render({ canvasContext: context!, viewport }).promise;
 
@@ -75,11 +81,11 @@ export async function convertPdfToImage(
                 1.0
             ); // Set quality to maximum (1.0)
         });
-    } catch (err) {
+    } catch (err : any) {
         return {
             imageUrl: "",
             file: null,
-            error: `Failed to convert PDF: ${err}`,
+            error: `Failed to convert PDF: ${err?.message || err}`,
         };
     }
 }
