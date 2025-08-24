@@ -27,7 +27,7 @@ const Upload = () => {
 
         setStatusText('Converting to image...');
         const imageFile = await convertPdfToImage(file);
-        if(!imageFile.file) return setStatusText('Error: Failed to convert File to image');
+        if(!imageFile.file) return setStatusText('Error: Failed to convert PDF to image');
 
         setStatusText('Uploading the image...');
         const uploadedImage = await fs.upload([imageFile.file]);
@@ -70,9 +70,7 @@ const Upload = () => {
         const formData = new FormData(form);
 
         const companyName = formData.get('company-name') as string;
-
         const jobTitle = formData.get('job-title') as string;
-
         const jobDescription = formData.get('job-description') as string;
 
         if(!file) return;

@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {useLocation, useNavigate} from "react-router";
 
 export const x = () => ([
-    {title : 'Resumind'},
+    {title : 'SkillAlign'},
     {name:'description',content: 'Log into your account'},
 ])
 

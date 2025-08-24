@@ -50,9 +50,9 @@ const Resume = () => {
   return (
     <main className="!pt-0">
         <nav className="resume-nav">
-            <Link to ="/" className="back-button">
-                <img src="/icons/back.svg" alt="logo" className="w-2.5 h-2.5 " />
-                <span className="text-gray-800 text-sm font-semibold">Back To Homepage</span>
+            <Link to="/" className="back-button">
+                <img src="/icons/back.svg" alt="logo" className="w-2.5 h-2.5" />
+                <span className="text-gray-800 text-sm font-semibold">Back to Homepage</span>
             </Link>
             <div className="flex flex-row w-full max-lg:flex-col-reverse">
                 <section className="feedback-section bg-[url('/images/bg-small.svg') bg-cover h-[100vh] sticky top-0 items-center justify-center">
